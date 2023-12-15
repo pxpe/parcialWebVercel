@@ -56,10 +56,10 @@
                 <input name="lon" type="hidden" value="{{ evento['lugar']['lon'] if evento else ''}}"/>
 
                 <label for="nombre" class="font-title font-bold text-sky-600">Nombre:</label>
-                <input name="nombre" required type="text" placeholder="Nombre" value="{{ evento['nombre'] if post else ''}}"/>
+                <input name="nombre" required type="text" placeholder="Nombre" value="{{ evento['nombre'] if evento else ''}}"/>
                 
                 <label for="lugar" class="font-title font-bold text-sky-600">Lugar:</label>
-                <input name="lugar" required type="text" placeholder="Lugar" value="{{ evento['lugar'] if post else ''}}"/>
+                <input name="lugar" required type="text" placeholder="Lugar" value="{{ evento['lugar'] if evento else ''}}"/>
                 
                 <label for="fecha" class="font-title font-bold text-sky-600">Fecha:</label>
                 <input name="fecha" type="datetime-local" placeholder="Fecha" value="{{ evento['timestamp'] if evento else ''}}"/>

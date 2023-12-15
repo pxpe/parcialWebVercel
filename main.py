@@ -39,7 +39,7 @@ google = oauth.register(
 @app.route('/', methods=['GET'])
 async def home():
     user = session.get('user', None)
-
+    coordsDireccion = None
     eventos = mongo.eventos.find()
     if request.args.get('direccion'):
         direccion = request.args.get('direccion')
@@ -102,6 +102,112 @@ async def create():
 
         return redirect('/')
 
+
+@app.route('/edit/<id>', methods=['GET', 'POST'])
+async def edit(id):
+    if not session.get('user'):
+        return redirect(url_for('login'))
+
+    userMail = session.get('user')['email']
+    ev = mongo.eventos.find_one({'_id': ObjectId(id)})
+    mail = ev['organizador']
+    
+    user = session.get('user', None)
+
+    if userMail != mail:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        nombre = request.form.get('nombre')
+        lugar = request.form.get('lugar')
+        fecha = request.form.get('fecha')
+
+        if 'imagen' not in request.files or request.files['imagen'].filename == '':
+            try:
+
+                newData = {
+                    'nombre': nombre,
+                    'timestamp': fecha,
+                    'lugar': lugar,
+                    'coords': {},
+                    'organizador': userMail,
+                    'imagen': ev['imagen'],
+                }
+
+                if request.form['location'] != ev['location']:
+                    coords = await get_coords(request.form['location'])
+
+                newData['coords']['lat'] = coords[0]
+                newData['coords']['lon'] = coords[1]
+
+
+                
+                mongo.eventos.update_one({'_id': ObjectId(id)}, {'$set':newData})
+                print('Post editado')
+                return redirect('/')
+
+            except Exception as e:
+                print(e)
+                return redirect(request.url)
+        else:
+
+            file = request.files['imagen']
+            
+            if file and allowed_file(file.filename):
+                print('File allowed')
+                try:
+                    imgUrl = await upload_image_path(file)
+
+                    newData = {
+                        'nombre': nombre,
+                        'timestamp': fecha,
+                        'lugar': lugar,
+                        'coords': {},
+                        'organizador': userMail,
+                        'imagen': imgUrl,
+                    }
+
+                    if request.form['location'] != ev['location']:
+                        coords = await get_coords(request.form['location'])
+
+                    newData['coords']['lat'] = coords[0]
+                    newData['coords']['lon'] = coords[1]
+
+
+                    
+                    mongo.eventos.update_one({'_id': ObjectId(id)}, {'$set':newData})
+                    print('Post editado')
+                    return redirect('/')
+
+                except Exception as e:
+                    return redirect(request.url)
+
+    else:
+        return render_template('create.html', evento=ev,user=user)
+
+@app.route('/evento/<id>', methods=['GET'])
+def evento(id):
+    user = session.get('user', None)
+
+    e = mongo.eventos.find_one({'_id': ObjectId(id)})
+
+    return render_template('evento.html', user=user, evento=e)
+
+@app.route('/delete/<id>', methods=['POST'])
+def delete(id):
+    if not session.get('user'):
+        return redirect(url_for('login'))
+
+    userMail = session.get('user')['email']
+
+    e = mongo.eventos.find_one({'_id': ObjectId(id)})
+    eEmail = e['organizador']
+
+    if userMail != eEmail:
+        return redirect(url_for('login'))
+    else:
+        mongo.eventos.delete_one({'_id': ObjectId(id)})
+        return redirect('/')
 
 @app.route('/logs', methods=['GET'])
 def logs():
