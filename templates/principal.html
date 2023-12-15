@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'> 
+    <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <style>
+        body{
+            font-family: 'Montserrat';
+        }
+    </style>    
+</head>
+<body>
+
+    <div class="w-full flex items-center bg-sky-300 p-5" style="align-items: center; justify-content: space-between;">
+        <div class="flex items-center gap-5">
+            <a class="font-title font-bold text-white" href="/">Eventual</a>
+            <a class="font-title font-bold text-white p-2 bg-sky-500 hover:bg-sky-700 rounded-2xl" href="/logs">Ver Logs</a>
+        </div>
+
+        <div>
+            {% if user %}
+            <div class="flex items-center gap-5">
+                <a class="font-title font-bold text-white p-2 bg-sky-500 hover:cursor-pointer hover:bg-sky-700 rounded-xl" href="/crear">Crear nuevo evento</a>
+                <div class="flex flex-col text-right">
+                    <span class="font-title font-bold text-white">Bienvenido<br> {{user['name']}}</span>
+                </div>
+                <img src="{{user['picture']}}" height="40" width="40" class="rounded-full"></img>
+
+                <div class="logoutDiv transition duration-200 ease-in-out">
+                    <a href="/logout" class=" ml-1 text-black p-2 bg-gray-200 rounded-2xl hover:bg-gray-300"> Cerrar Sesión</a>
+                </div>
+
+            </div>
+
+            {% else %}
+                <a class="font-title font-bold text-white p-2 bg-sky-500 hover:cursor-pointer hover:bg-sky-700 rounded-xl" href="/login">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+
+
+    </div>    
+    
+    <div class="flex mt-5" style="justify-content: center;">
+        <form action="/" method="get" class="mx-center bg-gray-100 p-5 rounded-2xl">
+            <label for="direccion" class="font-title font-bold text-sky-600">Buscar direccion:</label><br>
+            <div class="flex items-center gap-2">
+                <input type="text" name="direccion" placeholder="" class="rounded-xl p-2">
+                <input type="submit" value="Buscar" class="rounded-xl p-2 bg-sky-500 hover:bg-sky-700 text-white">
+            </div>
+ 
+        </form>
+    </div>
+
+    <div>
+            <h1 class="text-3xl font-bold text-sky-600 mb-3" style="width: 80%; margin: auto;">Eventos</h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 3 3 3; width: 80%; margin: auto; justify-content: center;">
+        
+
+
+        {% for evento in eventos %}
+
+        <div style="width: fit-content;"> 
+            <div class="bg-gray-100 rounded-tl-xl rounded-tr-xl p-1">
+                <h1 class="text-bold text-sky-600">{{evento['nombre']}}</h1>
+                <h2>{{evento['organizador']}}</h2>
+            </div>
+            
+            <img src="{{evento['imagen']}}" height="200px" width="300px"></img>
+            <div class="bg-gray-100 p-2 text-center rounded-bl-xl rounded-br-xl">
+                <a href="{{'/evento/' ~ evento['_id']}}" class="bg-gray-500 hover:bg-gray-700 text-white rounded-xl p-2">Ver Información</a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+    
+</body>
+</html>

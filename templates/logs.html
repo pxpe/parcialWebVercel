@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'> 
+    <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <style>
+        body{
+            font-family: 'Montserrat';
+        }
+    </style>    
+</head>
+<body>
+
+    <div class="w-full flex items-center bg-sky-300 p-5" style="align-items: center; justify-content: space-between;">
+        <a class="font-title font-bold text-white" href="/">Eventual</a>
+
+        <div>
+            {% if user %}
+            <div class="flex items-center gap-5">
+                <a class="font-title font-bold text-white p-2 bg-sky-500 hover:cursor-pointer hover:bg-sky-700 rounded-xl" href="/crear">Crear nuevo evento</a>
+                <div class="flex flex-col text-right">
+                    <span class="font-title font-bold text-white">Bienvenido<br> {{user['name']}}</span>
+                </div>
+                <img src="{{user['picture']}}" height="40" width="40" class="rounded-full"></img>
+
+                <div class="logoutDiv transition duration-200 ease-in-out">
+                    <a href="/logout" class=" ml-1 text-black p-2 bg-gray-200 rounded-2xl hover:bg-gray-300"> Cerrar Sesión</a>
+                </div>
+
+            </div>
+
+            {% else %}
+                <a class="font-title font-bold text-white p-2 bg-sky-500 hover:cursor-pointer hover:bg-sky-700 rounded-xl" href="/login">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <h1 class="mx-auto font-bold text-center mt-5 mb-5">Logs de inicio de Sesión:</h1>
+
+    <table border="1" style="width: 70%;max-width: 70%; margin: auto;">
+        <tr class="bg-sky-300 text-white ">
+            <th>Timestamp</th>
+            <th>Usuario</th>
+            <th>Caducidad</th>
+            <th>Token</th>
+        </tr>
+        {% for log in logs %}
+        <tr>
+            <td>{{log['timestamp']}}</td>
+            <td>{{log['user']}}</td>
+            <td>{{log['caducidad']}}</td>
+            <td style="overflow-x: scroll; max-width: 500px;">{{log['token']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

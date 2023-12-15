@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'> 
+    <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <style>
+        body{
+            font-family: 'Montserrat';
+        }
+    </style>    
+</head>
+<body>
+
+    <div class="w-full flex items-center bg-sky-300 p-5" style="align-items: center; justify-content: space-between;">
+        <div class="flex items-center gap-5">
+            <a class="font-title font-bold text-white" href="/">Eventual</a>
+            <a class="font-title font-bold text-white p-2 bg-sky-500 hover:bg-sky-700 rounded-2xl" href="/logs">Ver Logs</a>
+        </div>
+
+        <div>
+            {% if user %}
+            <div class="flex items-center gap-5">
+                <a class="font-title font-bold text-white p-2 bg-sky-500 hover:cursor-pointer hover:bg-sky-700 rounded-xl" href="/crear">Crear nuevo evento</a>
+                <div class="flex flex-col text-right">
+                    <span class="font-title font-bold text-white">Bienvenido<br> {{user['name']}}</span>
+                </div>
+                <img src="{{user['picture']}}" height="40" width="40" class="rounded-full"></img>
+
+                <div class="logoutDiv transition duration-200 ease-in-out">
+                    <a href="/logout" class=" ml-1 text-black p-2 bg-gray-200 rounded-2xl hover:bg-gray-300"> Cerrar Sesión</a>
+                </div>
+
+            </div>
+
+            {% else %}
+                <a class="font-title font-bold text-white p-2 bg-sky-500 hover:cursor-pointer hover:bg-sky-700 rounded-xl" href="/login">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+
+
+    </div>    
+
+
+    <div>
+        
+        <div style="width:30%; margin: auto; margin-top: 50px;">
+
+            <form action="" method="post" class="p-5 bg-gray-200 flex flex-col gap-3" enctype="multipart/form-data">
+        
+                <input name="organizador" type="hidden" value="{{ evento['organizador'] if evento else ''}}"/>
+                <input name="lat" type="hidden" value="{{ evento['lugar']['lat'] if evento else ''}}"/>
+                <input name="lon" type="hidden" value="{{ evento['lugar']['lon'] if evento else ''}}"/>
+
+                <label for="nombre" class="font-title font-bold text-sky-600">Nombre:</label>
+                <input name="nombre" required type="text" placeholder="Nombre" value="{{ evento['nombre'] if post else ''}}"/>
+                
+                <label for="lugar" class="font-title font-bold text-sky-600">Lugar:</label>
+                <input name="lugar" required type="text" placeholder="Lugar" value="{{ evento['lugar'] if post else ''}}"/>
+                
+                <label for="fecha" class="font-title font-bold text-sky-600">Fecha:</label>
+                <input name="fecha" type="datetime-local" placeholder="Fecha" value="{{ evento['timestamp'] if evento else ''}}"/>
+
+                <input name="imagen" type="file" />
+                <input type="submit" value="{{ 'Editar Evento' if evento else 'Crear Evento'}}" class="p-3 border rounded bg-gray-300 hover:scale-105 transition duration-200 ease-in-out hover:cursor-pointer"/>
+        
+            </form>
+            <div class="mt-5">
+                {% if error %}
+                    <span class="text-red-500">{{error}}</span>
+                {% endif %}
+
+
+                <a href="/" class="p-3 border rounded bg-gray-300 hover:scale-105 transition duration-200 ease-in-out hover:cursor-pointer">Volver</a>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+
